@@ -1,12 +1,17 @@
 const router = require('express').Router()
 const Project = require('./model')
 
-router.get('/', (req, res) => {
-
+router.get('/', async (req, res, next) => {
+    try {
+        const projects = await Project.getAll()
+        res.json(projects)
+      } catch (err) {
+        next(err)
+      }
 })
 
 router.post('/', (req, res, next) => {
-    
+
 })
 
 router.use((err, req, res, next) => { // eslint-disable-line
