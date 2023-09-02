@@ -1,6 +1,24 @@
 const db = require('../../data/dbConfig')
 
-exports.validateTask = function (req, res, next) {
+const checkProjectId = async (req, res, next) => {
+    try {
+        const existing = await db('projects')
+            .where('project_id', req.body.project_id)
+            .select('project_id')
+            .first();
+    
+        if (!existing) {
+            next({ 
+                status: 404, 
+                message: `Project with project_id ${req.body.project_id} not found`
+            });
+        } else next();
+    } catch (err) {
+        next(err);
+    }
+}
+
+const validateTask = (req, res, next) => {
     const { task_description, project_id } = req.body
     if (
       task_description === undefined ||
@@ -25,18 +43,7 @@ exports.validateTask = function (req, res, next) {
       }
 }
 
-exports.checkProjectId = async function (req, res, next) {
-    try {
-      const existing = await db('projects')
-        .where({project_id: req.params.project_id})
-        .first()
-      if (!existing) {
-        next({ 
-          status: 404, 
-          message: `project with project_id ${req.params.project_id} not found`
-        })
-      } else next()
-    } catch (err) {
-      next(err)
-    }
+module.exports = {
+    checkProjectId,
+    validateTask
 }

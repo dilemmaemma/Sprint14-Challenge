@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const Resource = require('./model')
+const md = require('./middleware')
 
 router.get('/', async (req, res, next) => {
     try {
@@ -10,8 +11,14 @@ router.get('/', async (req, res, next) => {
       }
 })
 
-router.post('/', (req, res, next) => {
+router.post('/', md.validateResource, (req, res, next) => {
+    const resources = req.body
 
+    Resource.add(resources)
+      .then(resource => {
+        res.status(201).json(resource)
+      })
+      .catch(next)
 })
 
 router.use((err, req, res, next) => { // eslint-disable-line

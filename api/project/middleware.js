@@ -1,15 +1,16 @@
-exports.validateScheme = function (req, res, next) {
-    const { scheme_name } = req.body
-    if(
-      scheme_name === undefined ||
-      typeof scheme_name !== 'string' ||
-      !scheme_name.trim()
-      ) {
-        next({ 
-          status: 400,
-          message: `invalid scheme_name`
-        })
-      } else {
-        next()
-      }
+exports.validateProject = function (req, res, next) {
+  const { project_name } = req.body
+  if (
+    project_name === undefined ||
+    typeof project_name !== 'string' ||
+    !project_name.trim()
+
+    ) {
+      next({ 
+        status: 400,
+        message: `invalid project_name`
+      })
+    } else {
+      next()
+    }
 }

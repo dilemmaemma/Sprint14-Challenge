@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const Task = require('./model')
-const md = require('./middleware')
+const { checkProjectId, validateTask } = require('./middleware')
 
 router.get('/', async (req, res, next) => {
     try {
@@ -11,10 +11,13 @@ router.get('/', async (req, res, next) => {
       }
 })
 
-router.post('/', md.validateTask, md.checkProjectId, (req, res, next) => {
-    const tasks = req.body
+router.post('/', checkProjectId, validateTask, (req, res, next) => {
+    let { task_description, task_notes, task_completed, project_id } = req.body
 
-    Task.add(tasks)
+    if ( !task_completed ) task_completed = 0
+    else if ( task_completed === true ) task_completed = 1
+
+    Task.add({ task_description, task_notes, task_completed, project_id })
       .then(task => {
         res.status(201).json(task)
       })

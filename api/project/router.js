@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const Project = require('./model')
+const md = require('./middleware')
 
 router.get('/', async (req, res, next) => {
     try {
@@ -10,8 +11,18 @@ router.get('/', async (req, res, next) => {
       }
 })
 
-router.post('/', (req, res, next) => {
+router.post('/', md.validateProject, (req, res, next) => {
+    const { project_name, project_description, project_completed } = req.body
+    let converter
 
+    if ( !project_completed ) converter = 0
+    else if ( project_completed === true ) converter = 1
+
+    Project.add({ project_name, project_description, converter })
+      .then(project => {
+        res.status(201).json(project)
+      })
+      .catch(next)
 })
 
 router.use((err, req, res, next) => { // eslint-disable-line
