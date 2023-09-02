@@ -1,4 +1,4 @@
-exports.validateProject = function (req, res, next) {
+const validateProject = (req, res, next) => {
   const { project_name } = req.body
   if (
     project_name === undefined ||
@@ -13,4 +13,8 @@ exports.validateProject = function (req, res, next) {
     } else {
       next()
     }
+}
+
+module.exports = {
+  validateProject
 }
